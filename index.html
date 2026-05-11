@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0d1117">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ITIL v5">
+<meta name="description" content="ITIL v5 Foundation Dashboard — 240 bilingual questions, mock exams, flashcards, smart review, adaptive exams.">
+<title>ITIL v5 Foundation Dashboard v4.0</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1117'/><text y='.9em' x='50' text-anchor='middle' font-size='70'>🎓</text></svg>">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="toast"></div>
+<div class="container">
+<div class="top-bar">
+<h1 id="mainTitle"></h1>
+<nav>
+<button id="navInfo" class="active" onclick="showView('info')"></button>
+<button id="navHome" onclick="showView('home')"></button>
+<button id="navHist" onclick="showView('history')"></button>
+<button id="navTheme" class="tbtn" onclick="toggleTheme()"></button>
+<button id="navLang" class="tbtn" onclick="toggleLang()"></button>
+</nav>
+</div>
+<div id="info" class="view active">
+<div class="results-box" style="text-align:center"><div style="font-size:3em;margin-bottom:10px">🎓</div>
+<h1 style="color:var(--blue);margin:0">ITIL v5 Foundation</h1>
+<h2 style="color:var(--muted);margin:5px 0" id="infoSub"></h2>
+<p style="color:var(--muted);margin-top:5px">Syllabus PeopleCert 2026 · Bilingual ES/EN</p></div>
+<div class="results-box"><h2 id="infoFeatTitle"></h2><div id="infoFeatList"></div></div>
+<div class="results-box"><h2 id="infoKeyTitle"></h2><table><thead><tr><th id="infoKC1"></th><th id="infoKC2"></th></tr></thead><tbody id="infoKB"></tbody></table></div>
+</div>
+<div id="home" class="view">
+<h2 id="summaryTitle"></h2><div id="summaryCards"></div>
+<div class="center">
+<button class="btn btn-green" onclick="showSimLanding()" id="btnSim"></button>
+<button class="btn btn-purple" onclick="showView('domains')" id="btnDom"></button>
+<button class="btn btn-blue" onclick="startExam('full')" id="btnFull"></button>
+</div>
+<div class="center" style="margin-top:0">
+<button class="btn btn-orange" onclick="startSmartReview()" id="btnSmart"></button>
+<button class="btn btn-teal" onclick="startFlashcards()" id="btnFlash"></button>
+<button class="btn btn-pink" onclick="startAdaptive()" id="btnAdapt"></button>
+</div>
+</div>
+<div id="domains" class="view">
+<h2 id="domTitle"></h2><div id="domainCards"></div>
+<div class="center"><button class="btn btn-gray" onclick="showView('home')" id="btnBackDom"></button></div>
+</div>
+<div id="simLanding" class="view">
+<div class="results-box" style="text-align:center">
+<h1 style="color:var(--blue);margin:0" id="slTitle"></h1>
+<p style="color:var(--muted);margin:10px 0;line-height:1.6" id="slDesc"></p></div>
+<div id="slDomains"></div>
+<div style="text-align:center;margin:15px 0">
+<label style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.95em;background:var(--bg3);padding:10px 20px;border-radius:8px;border:1px solid var(--border)">
+<input type="checkbox" id="chkReal" style="transform:scale(1.3)">
+<span id="slRealLabel"></span></label></div>
+<div class="center">
+<button class="btn btn-green" onclick="launchSim()" id="slStart" style="font-size:1.15em;padding:15px 40px"></button>
+<br><button class="btn btn-gray" onclick="showView('home')" id="slBack" style="margin-top:10px"></button>
+</div>
+</div>
+<div id="exam" class="view">
+<div id="timerDiv" class="timer"></div>
+<div class="progress"><div class="progress-bar" id="progBar"></div></div>
+<div id="examInfo"></div>
+<div id="examCounter"></div>
+<div id="examShortcuts" style="text-align:center;margin:8px 0"></div>
+<div id="questionArea"></div>
+<div class="q-nav">
+<button class="btn btn-gray" id="btnPrev" onclick="prevQ()"></button>
+<span id="qCounter" style="color:var(--muted)"></span>
+<button class="btn btn-gray" id="btnNext" onclick="nextQ()"></button>
+</div>
+<div id="qGrid" class="q-grid"></div>
+<div class="center">
+<button class="btn btn-gray" id="btnBackExam" onclick="backFromExam()" style="display:none"></button>
+<button class="btn btn-gray" id="btnFlag" onclick="toggleFlag()"></button>
+<button class="btn btn-red" id="btnFinish" onclick="submitExam()"></button>
+</div>
+</div>
+<div id="flashcards" class="view">
+<div id="flashInfo" style="text-align:center;color:var(--muted);margin:10px 0;font-size:.95em"></div>
+<div id="flashCard" class="flash-card" onclick="flipCard()"></div>
+<div class="q-nav">
+<button class="btn btn-gray" onclick="flashPrev()" id="btnFlashPrev"></button>
+<span id="flashCounter" style="color:var(--muted)"></span>
+<button class="btn btn-gray" onclick="flashNext()" id="btnFlashNext"></button>
+</div>
+<div class="center"><button class="btn btn-gray" onclick="showView('home')" id="btnBackFlash"></button></div>
+</div>
+<div id="results" class="view">
+<div id="resultsContent"></div>
+<div class="center">
+<button class="btn btn-green" id="btnBackHome" onclick="showView('home')"></button>
+<button class="btn btn-blue" id="btnReview" onclick="showReview()"></button>
+</div>
+<div id="reviewArea"></div>
+</div>
+<div id="history" class="view">
+<h2 id="histTitle"></h2><div id="historyContent"></div>
+<h2 id="progressTitle" style="margin-top:30px"></h2><div id="progressContent"></div>
+<div class="center">
+<button class="btn btn-red" id="btnClearHist" onclick="clearHistory()"></button>
+<button class="btn btn-gray" id="btnResetStats" onclick="resetStats()"></button>
+</div>
+</div>
+<div class="ver" id="globalFooter"></div>
+</div>
+<script src="config.js"></script>
+<script src="questions.js"></script>
+<script src="app.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(function(r){
+    r.addEventListener('updatefound',function(){
+      var nw=r.installing;
+      nw.addEventListener('statechange',function(){
+        if(nw.state==='activated'&&navigator.serviceWorker.controller){
+          if(typeof toast==='function') toast('📲 App actualizada');
+        }
+      });
+    });
+  });
+}
+</script>
+</body>
+</html>
