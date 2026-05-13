@@ -6,7 +6,16 @@ var ALL=[];
 for(var i=0;i<R.length;i++){var r=R[i];ALL.push({d:r[0],id:r[1],q:[r[2],r[3]],o:[r[4],r[5]],c:r[6],e:[r[7],r[8]]});}
 var examQs=[],answers=[],flags=[],curQ=0,timerID=null,timeLeft=0,examMode="",lastDomain=0,examActive=false;
 var qTimes=[],qStartTime=0,currentStreak=0,bestStreak=0;
+var optOrder=[];
 var flashQs=[],flashIdx=0,flashFlipped=false;
+function genOptOrder(n){
+  optOrder=[];
+  for(var i=0;i<n;i++){
+    var o=[0,1,2,3];
+    for(var j=3;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=o[j];o[j]=o[k];o[k]=t;}
+    optOrder.push(o);
+  }
+}
 function getQStats(){return JSON.parse(safeLSGet("itilv5_qstats","{}"));}
 function saveQStats(s){safeLSSet("itilv5_qstats",JSON.stringify(s));}
 function updateQStat(qid,ok){
@@ -19,7 +28,7 @@ function updateQStat(qid,ok){
 }
 function autoSave(){
   if(!examActive) return;
-  var st={examMode:examMode,examQIds:[],answers:answers,flags:flags,curQ:curQ,timeLeft:timeLeft,realMode:realMode,qTimes:qTimes,currentStreak:currentStreak,bestStreak:bestStreak,lastDomain:lastDomain};
+  var st={examMode:examMode,examQIds:[],answers:answers,flags:flags,curQ:curQ,timeLeft:timeLeft,realMode:realMode,qTimes:qTimes,currentStreak:currentStreak,bestStreak:bestStreak,lastDomain:lastDomain,optOrder:optOrder};
   for(var i=0;i<examQs.length;i++) st.examQIds.push(examQs[i].id);
   safeLSSet("itilv5_autosave",JSON.stringify(st));
 }
@@ -36,6 +45,8 @@ function restoreExam(state){
     if(idMap[state.examQIds[i]]) examQs.push(idMap[state.examQIds[i]]);
   }
   if(examQs.length!==state.examQIds.length){clearAutoSave();return false;}
+  optOrder=state.optOrder||[];
+  if(optOrder.length!==examQs.length) genOptOrder(examQs.length);
   while(qTimes.length<examQs.length) qTimes.push(0);
   examActive=true;
   if(examMode==="sim"&&state.timeLeft>0){
@@ -127,6 +138,32 @@ function renderSummary(){
     h+='<div class="sl">'+it.label+'</div></div></div>';
   }
   h+='</div>';
+  var tc={},tt={};
+  for(var d=0;d<7;d++){tc[d]=0;tt[d]=0;}
+  for(var i=0;i<hist.length;i++){
+    var e=hist[i];
+    if(e.dc&&e.dt){for(var d=0;d<7;d++){tc[d]+=(e.dc[d]||0);tt[d]+=(e.dt[d]||0);}}
+  }
+  var str=[],wk=[];
+  for(var d=0;d<7;d++){
+    if(tt[d]===0) continue;
+    var dp=Math.round((tc[d]/tt[d])*100);
+    if(dp>=80) str.push({icon:DICONS[d],name:DN[d][L],pct:dp});
+    else if(dp<65) wk.push({icon:DICONS[d],name:DN[d][L],pct:dp});
+  }
+  if(str.length>0||wk.length>0){
+    h+='<div class="results-box" style="padding:18px">';
+    if(str.length>0){
+      h+='<h3 style="color:var(--green);margin:0 0 8px">'+UI.strengths[L]+'</h3>';
+      for(var i=0;i<str.length;i++) h+='<div style="margin:4px 0;font-size:.9em">'+str[i].icon+' '+str[i].name+' <span style="color:var(--green);font-weight:700">'+str[i].pct+'%</span></div>';
+    }
+    if(wk.length>0){
+      if(str.length>0) h+='<div style="margin:12px 0 0"></div>';
+      h+='<h3 style="color:var(--red);margin:0 0 8px">'+UI.improve[L]+'</h3>';
+      for(var i=0;i<wk.length;i++) h+='<div style="margin:4px 0;font-size:.9em">'+wk[i].icon+' '+wk[i].name+' <span style="color:var(--red);font-weight:700">'+wk[i].pct+'%</span></div>';
+    }
+    h+='</div>';
+  }
   document.getElementById("summaryCards").innerHTML=h;
 }
 function renderDomainCards(){
@@ -243,8 +280,14 @@ function shuffle(a){
   for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}
   return b;
 }
+function initExamArrays(n){
+  answers=[];flags=[];qTimes=[];
+  for(var i=0;i<n;i++){answers.push(-1);flags.push(false);qTimes.push(0);}
+  genOptOrder(n);
+  curQ=0;qStartTime=Date.now();currentStreak=0;bestStreak=0;
+}
 function startExam(mode){
-  examMode=mode;examQs=[];examActive=true;currentStreak=0;bestStreak=0;
+  examMode=mode;examQs=[];examActive=true;
   if(mode==="sim"){
     for(var d=0;d<7;d++){
       var pool=[];
@@ -252,15 +295,15 @@ function startExam(mode){
       pool=shuffle(pool);
       for(var j=0;j<DSIM[d]&&j<pool.length;j++) examQs.push(pool[j]);
     }
-    examQs=shuffle(examQs);timeLeft=3600;startTimer();
+    examQs=shuffle(examQs);
+    initExamArrays(examQs.length);
+    timeLeft=3600;startTimer();
     document.getElementById("timerDiv").style.display="block";
   } else {
     realMode=false;examQs=shuffle(ALL.slice());
+    initExamArrays(examQs.length);
     document.getElementById("timerDiv").style.display="none";
   }
-  answers=[];flags=[];qTimes=[];
-  for(var i=0;i<examQs.length;i++){answers.push(-1);flags.push(false);qTimes.push(0);}
-  curQ=0;qStartTime=Date.now();
   var info="";
   if(mode==="sim"){
     info=UI.simBtn[L]+" — "+examQs.length+" "+UI.qs[L].toLowerCase()+" / 60 "+UI.min[L];
@@ -271,11 +314,10 @@ function startExam(mode){
   showView("exam");renderQ();renderGrid();renderExamCounter();
 }
 function startDomain(d){
-  examMode="domain";lastDomain=d;examActive=true;realMode=false;currentStreak=0;bestStreak=0;examQs=[];
+  examMode="domain";lastDomain=d;examActive=true;realMode=false;examQs=[];
   for(var i=0;i<ALL.length;i++){if(ALL[i].d===d) examQs.push(ALL[i]);}
-  examQs=shuffle(examQs);answers=[];flags=[];qTimes=[];
-  for(var i=0;i<examQs.length;i++){answers.push(-1);flags.push(false);qTimes.push(0);}
-  curQ=0;qStartTime=Date.now();
+  examQs=shuffle(examQs);
+  initExamArrays(examQs.length);
   if(timerID){clearInterval(timerID);timerID=null;}
   document.getElementById("timerDiv").style.display="none";
   var pct=Math.round((DCOUNTS[d]/ALL.length)*100);
@@ -287,10 +329,9 @@ function startSmartReview(){
   var qs=getQStats(),weak=[];
   for(var i=0;i<ALL.length;i++){var s=qs[ALL[i].id];if(s&&s.attempts>0&&(s.correct/s.attempts)<0.65) weak.push(ALL[i]);}
   if(weak.length===0){toast(UI.noWeak[L]);return;}
-  examMode="smart";examActive=true;realMode=false;currentStreak=0;bestStreak=0;
-  examQs=shuffle(weak);answers=[];flags=[];qTimes=[];
-  for(var i=0;i<examQs.length;i++){answers.push(-1);flags.push(false);qTimes.push(0);}
-  curQ=0;qStartTime=Date.now();
+  examMode="smart";examActive=true;realMode=false;
+  examQs=shuffle(weak);
+  initExamArrays(examQs.length);
   if(timerID){clearInterval(timerID);timerID=null;}
   document.getElementById("timerDiv").style.display="none";
   document.getElementById("examInfo").innerHTML="🧠 "+UI.smartInfo[L]+" — "+examQs.length+" "+UI.qs[L].toLowerCase();
@@ -307,16 +348,15 @@ function startAdaptive(){
   for(var d=0;d<7;d++){dA[d]=Math.max(1,Math.round((weights[d]/totalW)*simTotal));assigned+=dA[d];}
   while(assigned>simTotal){for(var d=6;d>=0&&assigned>simTotal;d--){if(dA[d]>1){dA[d]--;assigned--;}}}
   while(assigned<simTotal){for(var d=0;d<7&&assigned<simTotal;d++){dA[d]++;assigned++;}}
-  examMode="adaptive";examActive=true;realMode=false;currentStreak=0;bestStreak=0;examQs=[];
+  examMode="adaptive";examActive=true;realMode=false;examQs=[];
   for(var d=0;d<7;d++){
     var pool=[];
     for(var i=0;i<ALL.length;i++){if(ALL[i].d===d) pool.push(ALL[i]);}
     pool.sort(function(a,b){var sa=qs[a.id],sb=qs[b.id];var ra=sa&&sa.attempts>0?sa.correct/sa.attempts:0.5;var rb=sb&&sb.attempts>0?sb.correct/sb.attempts:0.5;return ra-rb;});
     for(var j=0;j<dA[d]&&j<pool.length;j++) examQs.push(pool[j]);
   }
-  examQs=shuffle(examQs);answers=[];flags=[];qTimes=[];
-  for(var i=0;i<examQs.length;i++){answers.push(-1);flags.push(false);qTimes.push(0);}
-  curQ=0;qStartTime=Date.now();
+  examQs=shuffle(examQs);
+  initExamArrays(examQs.length);
   if(timerID){clearInterval(timerID);timerID=null;}
   document.getElementById("timerDiv").style.display="none";
   document.getElementById("examInfo").innerHTML="🎯 "+UI.adaptInfo[L]+" — "+examQs.length+" "+UI.qs[L].toLowerCase();
@@ -355,21 +395,22 @@ function startTimer(){
 }
 function pad(n){return n<10?"0"+n:""+n;}
 function renderQ(){
-  var qObj=examQs[curQ],txt=qObj.q[L],opts=qObj.o[L];
+  var qObj=examQs[curQ],txt=qObj.q[L],opts=qObj.o[L],order=optOrder[curQ];
   var isScn=(txt.indexOf("ESCENARIO")===0||txt.indexOf("SCENARIO")===0);
   var qhtml=isScn?'<span class="scenario">'+txt+'</span>':txt;
   var answered=answers[curQ]!==-1,showFb=answered&&!realMode;
   var h='<div class="q-box"><div class="q-text">'+qhtml+'</div><div class="opts">';
   var letters=["A","B","C","D"];
-  for(var i=0;i<opts.length;i++){
+  for(var i=0;i<4;i++){
+    var origIdx=order[i];
     var cls="opt";
-    if(answered&&realMode){if(i===answers[curQ]) cls+=" selected";}
+    if(answered&&realMode){if(origIdx===answers[curQ]) cls+=" selected";}
     else if(answered){
-      if(i===qObj.c) cls+=" correct";
-      else if(i===answers[curQ]&&i!==qObj.c) cls+=" wrong";
-      if(i===answers[curQ]) cls+=" selected";
+      if(origIdx===qObj.c) cls+=" correct";
+      else if(origIdx===answers[curQ]&&origIdx!==qObj.c) cls+=" wrong";
+      if(origIdx===answers[curQ]) cls+=" selected";
     }
-    h+='<div class="'+cls+'" onclick="selectOpt('+i+')" tabindex="0"><span class="letter">'+letters[i]+'</span><span>'+opts[i]+'</span></div>';
+    h+='<div class="'+cls+'" onclick="selectOpt('+i+')" tabindex="0"><span class="letter">'+letters[i]+'</span><span>'+opts[origIdx]+'</span></div>';
   }
   h+='</div>';
   if(showFb) h+='<div class="explanation">💡 '+qObj.e[L]+'</div>';
@@ -381,9 +422,10 @@ function renderQ(){
 }
 function selectOpt(idx){
   if(answers[curQ]!==-1) return;
+  var origIdx=optOrder[curQ][idx];
   qTimes[curQ]=Math.round((Date.now()-qStartTime)/1000);
-  answers[curQ]=idx;
-  var qObj=examQs[curQ],ok=idx===qObj.c;
+  answers[curQ]=origIdx;
+  var qObj=examQs[curQ],ok=origIdx===qObj.c;
   updateQStat(qObj.id,ok);
   if(ok){currentStreak++;if(currentStreak>bestStreak)bestStreak=currentStreak;}else{currentStreak=0;}
   renderQ();updateGrid();renderExamCounter();autoSave();qStartTime=Date.now();
@@ -493,15 +535,17 @@ function showReview(){
   var h='<h2 style="margin-top:20px">'+UI.reviewTitle[L]+'</h2>';
   var letters=["A","B","C","D"];
   for(var i=0;i<examQs.length;i++){
-    var qObj=examQs[i],ok=answers[i]===qObj.c;
+    var qObj=examQs[i],ok=answers[i]===qObj.c,order=optOrder[i];
     h+='<div class="review-q '+(ok?"q-correct":"q-wrong")+'"><strong>'+(i+1)+'. '+qObj.q[L]+'</strong>';
     if(qTimes[i]>0) h+=' <span style="color:var(--muted);font-size:.8em">('+qTimes[i]+'s)</span>';
     h+='<br>';
     if(answers[i]===-1){h+='<span style="color:var(--orange)">'+UI.noAnswer[L]+'</span><br>';}
     else{
+      var dispAns=-1,dispCorr=-1;
+      for(var k=0;k<4;k++){if(order[k]===answers[i])dispAns=k;if(order[k]===qObj.c)dispCorr=k;}
       var yc=ok?"var(--green)":"var(--red)";
-      h+=UI.yourAns[L]+': <span style="color:'+yc+'">'+letters[answers[i]]+') '+qObj.o[L][answers[i]]+'</span>';
-      if(!ok) h+=' — '+UI.correctAns[L]+': <span style="color:var(--green)">'+letters[qObj.c]+') '+qObj.o[L][qObj.c]+'</span>';
+      h+=UI.yourAns[L]+': <span style="color:'+yc+'">'+letters[dispAns]+') '+qObj.o[L][answers[i]]+'</span>';
+      if(!ok) h+=' — '+UI.correctAns[L]+': <span style="color:var(--green)">'+letters[dispCorr]+') '+qObj.o[L][qObj.c]+'</span>';
       h+='<br>';
     }
     h+='<span style="color:var(--muted)">💡 '+qObj.e[L]+'</span></div>';
