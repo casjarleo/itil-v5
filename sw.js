@@ -1,4 +1,4 @@
-var CACHE_NAME = 'itilv5-v4.1b';
+var CACHE_NAME = 'itilv5-v4.1b2';
 var ASSETS = [
   './',
   './index.html',
