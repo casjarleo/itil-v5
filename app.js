@@ -1,21 +1,12 @@
-// ===== SAFE LOCALSTORAGE =====
 function safeLSGet(k,d){try{var v=localStorage.getItem(k);return v!==null?v:d;}catch(e){return d;}}
 function safeLSSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function safeLSRemove(k){try{localStorage.removeItem(k);}catch(e){}}
-
-// ===== TOAST =====
 function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.className="show";setTimeout(function(){t.className="";},2000);}
-
-// ===== CONVERT R to ALL =====
 var ALL=[];
 for(var i=0;i<R.length;i++){var r=R[i];ALL.push({d:r[0],id:r[1],q:[r[2],r[3]],o:[r[4],r[5]],c:r[6],e:[r[7],r[8]]});}
-
-// ===== VARIABLES =====
 var examQs=[],answers=[],flags=[],curQ=0,timerID=null,timeLeft=0,examMode="",lastDomain=0,examActive=false;
 var qTimes=[],qStartTime=0,currentStreak=0,bestStreak=0;
 var flashQs=[],flashIdx=0,flashFlipped=false;
-
-// ===== QSTATS =====
 function getQStats(){return JSON.parse(safeLSGet("itilv5_qstats","{}"));}
 function saveQStats(s){safeLSSet("itilv5_qstats",JSON.stringify(s));}
 function updateQStat(qid,ok){
@@ -26,8 +17,6 @@ function updateQStat(qid,ok){
   s[qid].lastSeen=Date.now();
   saveQStats(s);
 }
-
-// ===== AUTOSAVE =====
 function autoSave(){
   if(!examActive) return;
   var st={examMode:examMode,examQIds:[],answers:answers,flags:flags,curQ:curQ,timeLeft:timeLeft,realMode:realMode,qTimes:qTimes,currentStreak:currentStreak,bestStreak:bestStreak,lastDomain:lastDomain};
@@ -36,7 +25,6 @@ function autoSave(){
 }
 function clearAutoSave(){safeLSRemove("itilv5_autosave");}
 function getAutoSave(){var s=safeLSGet("itilv5_autosave",null);if(!s)return null;try{return JSON.parse(s);}catch(e){return null;}}
-
 function restoreExam(state){
   examMode=state.examMode;realMode=state.realMode||false;lastDomain=state.lastDomain||0;
   answers=state.answers;flags=state.flags;curQ=state.curQ;
@@ -75,15 +63,11 @@ function restoreExam(state){
   showView("exam");renderQ();renderGrid();renderExamCounter();
   clearAutoSave();return true;
 }
-
-// ===== THEME =====
 function toggleTheme(){
   T=T===0?1:0;document.body.className=T===1?"light":"";
   document.getElementById("navTheme").textContent=UI.themeTo[T][L];
   safeLSSet("itilv5_theme",""+T);
 }
-
-// ===== LANG =====
 function toggleLang(){
   L=L===0?1:0;
   document.getElementById("navLang").textContent=UI.togLang[L];
@@ -94,8 +78,6 @@ function toggleLang(){
   if(document.getElementById("flashcards").className.indexOf("active")!==-1&&flashQs.length>0) renderFlashCard();
   if(document.getElementById("results").className.indexOf("active")!==-1&&examQs.length>0) showReview();
 }
-
-// ===== REFRESH UI =====
 function refreshUI(){
   document.getElementById("mainTitle").innerHTML=UI.title[L]+" · "+ALL.length+" "+UI.qs[L];
   document.getElementById("navInfo").textContent=UI.info[L];
@@ -128,8 +110,6 @@ function refreshUI(){
   renderSummary();renderDomainCards();renderSimLanding();renderInfo();
   if(document.getElementById("history").className.indexOf("active")!==-1){renderHistory();renderProgress();}
 }
-
-// ===== SUMMARY =====
 function renderSummary(){
   var hist=JSON.parse(safeLSGet("itilv5_history","[]"));
   var exams=hist.length,best=0;
@@ -149,8 +129,6 @@ function renderSummary(){
   h+='</div>';
   document.getElementById("summaryCards").innerHTML=h;
 }
-
-// ===== DOMAIN CARDS =====
 function renderDomainCards(){
   var h="";
   for(var d=0;d<7;d++){
@@ -164,8 +142,6 @@ function renderDomainCards(){
   }
   document.getElementById("domainCards").innerHTML=h;
 }
-
-// ===== SIM LANDING =====
 function renderSimLanding(){
   document.getElementById("slTitle").textContent=UI.slTitle[L];
   document.getElementById("slDesc").textContent=UI.slDesc[L];
@@ -187,8 +163,6 @@ function renderSimLanding(){
 }
 function showSimLanding(){showView("simLanding");}
 function launchSim(){realMode=document.getElementById("chkReal").checked;startExam("sim");}
-
-// ===== INFO =====
 function renderInfo(){
   document.getElementById("infoSub").textContent=UI.infoSub[L];
   document.getElementById("infoFeatTitle").textContent=UI.infoFeatTitle[L];
@@ -202,15 +176,11 @@ function renderInfo(){
   for(var i=0;i<KEYS.length;i++) kh+='<tr><td><code style="background:var(--bg3);padding:4px 8px;border-radius:4px">'+KEYS[i][L][0]+'</code></td><td>'+KEYS[i][L][1]+'</td></tr>';
   document.getElementById("infoKB").innerHTML=kh;
 }
-
-// ===== SHORTCUTS =====
 function renderShortcuts(){
   var p=[];
   for(var i=0;i<KEYS.length;i++) p.push("<code style='background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:.9em'>"+KEYS[i][L][0]+"</code> "+KEYS[i][L][1]);
   document.getElementById("examShortcuts").innerHTML='<span class="shortcuts-bar">⌨️ '+p.join(" &nbsp;·&nbsp; ")+'</span>';
 }
-
-// ===== EXAM COUNTER =====
 function renderExamCounter(){
   var ans=0,fl=0;
   for(var i=0;i<answers.length;i++){if(answers[i]!==-1)ans++;if(flags[i])fl++;}
@@ -219,8 +189,6 @@ function renderExamCounter(){
   if(currentStreak>=3) t+=' <span class="streak-badge">🔥 '+currentStreak+'</span>';
   document.getElementById("examCounter").innerHTML=t;
 }
-
-// ===== BACK FROM EXAM =====
 function updateBackBtn(){
   var btn=document.getElementById("btnBackExam");
   var map={domain:UI.backExamDom,sim:UI.backExamSim,full:UI.backExamFull,smart:UI.backExamSmart,adaptive:UI.backExamAdapt};
@@ -235,8 +203,6 @@ function backFromExam(){
   else if(examMode==="sim") showView("simLanding");
   else showView("home");
 }
-
-// ===== INIT =====
 function init(){
   DCOUNTS=[0,0,0,0,0,0,0];
   for(var i=0;i<ALL.length;i++) DCOUNTS[ALL[i].d]++;
@@ -258,8 +224,6 @@ function init(){
     else{clearAutoSave();}
   }
 }
-
-// ===== NAV =====
 function showView(v){
   var views=document.querySelectorAll(".view");
   for(var i=0;i<views.length;i++) views[i].className="view";
@@ -274,15 +238,11 @@ function showView(v){
   if(v==="home") renderSummary();
   window.scrollTo(0,0);
 }
-
-// ===== SHUFFLE =====
 function shuffle(a){
   var b=a.slice();
   for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}
   return b;
 }
-
-// ===== START EXAM =====
 function startExam(mode){
   examMode=mode;examQs=[];examActive=true;currentStreak=0;bestStreak=0;
   if(mode==="sim"){
@@ -310,7 +270,6 @@ function startExam(mode){
   updateBackBtn();renderShortcuts();
   showView("exam");renderQ();renderGrid();renderExamCounter();
 }
-
 function startDomain(d){
   examMode="domain";lastDomain=d;examActive=true;realMode=false;currentStreak=0;bestStreak=0;examQs=[];
   for(var i=0;i<ALL.length;i++){if(ALL[i].d===d) examQs.push(ALL[i]);}
@@ -324,8 +283,6 @@ function startDomain(d){
   updateBackBtn();renderShortcuts();
   showView("exam");renderQ();renderGrid();renderExamCounter();
 }
-
-// ===== SMART REVIEW =====
 function startSmartReview(){
   var qs=getQStats(),weak=[];
   for(var i=0;i<ALL.length;i++){var s=qs[ALL[i].id];if(s&&s.attempts>0&&(s.correct/s.attempts)<0.65) weak.push(ALL[i]);}
@@ -340,8 +297,6 @@ function startSmartReview(){
   updateBackBtn();renderShortcuts();
   showView("exam");renderQ();renderGrid();renderExamCounter();
 }
-
-// ===== ADAPTIVE EXAM =====
 function startAdaptive(){
   var qs=getQStats();
   var dC=[0,0,0,0,0,0,0],dT=[0,0,0,0,0,0,0];
@@ -368,8 +323,6 @@ function startAdaptive(){
   updateBackBtn();renderShortcuts();
   showView("exam");renderQ();renderGrid();renderExamCounter();
 }
-
-// ===== FLASHCARDS =====
 function startFlashcards(){
   flashQs=shuffle(ALL.slice());flashIdx=0;flashFlipped=false;
   document.getElementById("flashInfo").innerHTML=UI.flashTitle[L]+" — "+flashQs.length+" "+UI.qs[L].toLowerCase();
@@ -390,8 +343,6 @@ function renderFlashCard(){
 function flipCard(){flashFlipped=!flashFlipped;renderFlashCard();}
 function flashPrev(){if(flashIdx>0){flashIdx--;flashFlipped=false;renderFlashCard();}}
 function flashNext(){if(flashIdx<flashQs.length-1){flashIdx++;flashFlipped=false;renderFlashCard();}}
-
-// ===== TIMER =====
 function startTimer(){
   if(timerID) clearInterval(timerID);
   timerID=setInterval(function(){
@@ -403,8 +354,6 @@ function startTimer(){
   },1000);
 }
 function pad(n){return n<10?"0"+n:""+n;}
-
-// ===== RENDER Q =====
 function renderQ(){
   var qObj=examQs[curQ],txt=qObj.q[L],opts=qObj.o[L];
   var isScn=(txt.indexOf("ESCENARIO")===0||txt.indexOf("SCENARIO")===0);
@@ -439,33 +388,33 @@ function selectOpt(idx){
   if(ok){currentStreak++;if(currentStreak>bestStreak)bestStreak=currentStreak;}else{currentStreak=0;}
   renderQ();updateGrid();renderExamCounter();autoSave();qStartTime=Date.now();
 }
-
-// ===== NAV Qs =====
 function trackTime(){if(answers[curQ]===-1){qTimes[curQ]+=Math.round((Date.now()-qStartTime)/1000);}}
 function prevQ(){if(curQ>0){trackTime();curQ--;qStartTime=Date.now();renderQ();}}
 function nextQ(){if(curQ<examQs.length-1){trackTime();curQ++;qStartTime=Date.now();renderQ();}}
 function goToQ(n){trackTime();curQ=n;qStartTime=Date.now();renderQ();}
 function toggleFlag(){flags[curQ]=!flags[curQ];updateGrid();renderExamCounter();toast(flags[curQ]?"🚩":"✓");autoSave();}
-
+function dotClass(i){
+  var c="q-dot";
+  if(i===curQ) c+=" current";
+  if(answers[i]!==-1){
+    if(realMode){c+=" answered";}
+    else if(answers[i]===examQs[i].c){c+=" correct-dot";}
+    else{c+=" wrong-dot";}
+  }
+  if(flags[i]) c+=" flagged";
+  return c;
+}
 function renderGrid(){
   var h="";
   for(var i=0;i<examQs.length;i++){
-    var c="q-dot";
-    if(i===curQ) c+=" current";if(answers[i]!==-1) c+=" answered";if(flags[i]) c+=" flagged";
-    h+='<div class="'+c+'" onclick="goToQ('+i+')" tabindex="0">'+(i+1)+'</div>';
+    h+='<div class="'+dotClass(i)+'" onclick="goToQ('+i+')" tabindex="0">'+(i+1)+'</div>';
   }
   document.getElementById("qGrid").innerHTML=h;
 }
 function updateGrid(){
   var dots=document.querySelectorAll(".q-dot");
-  for(var i=0;i<dots.length;i++){
-    var c="q-dot";
-    if(i===curQ) c+=" current";if(answers[i]!==-1) c+=" answered";if(flags[i]) c+=" flagged";
-    dots[i].className=c;
-  }
+  for(var i=0;i<dots.length;i++) dots[i].className=dotClass(i);
 }
-
-// ===== SUBMIT =====
 function submitExam(){
   var un=0;
   for(var i=0;i<answers.length;i++){if(answers[i]===-1) un++;}
@@ -521,8 +470,6 @@ function submitExam(){
   document.getElementById("reviewArea").innerHTML="";
   showView("results");
 }
-
-// ===== DOMAIN PERF =====
 function buildDomainPerf(){
   var hist=JSON.parse(safeLSGet("itilv5_history","[]"));
   var tc={},tt={};
@@ -542,8 +489,6 @@ function buildDomainPerf(){
   }
   h+='</div>';return h;
 }
-
-// ===== REVIEW =====
 function showReview(){
   var h='<h2 style="margin-top:20px">'+UI.reviewTitle[L]+'</h2>';
   var letters=["A","B","C","D"];
@@ -563,8 +508,6 @@ function showReview(){
   }
   document.getElementById("reviewArea").innerHTML=h;
 }
-
-// ===== PROGRESS =====
 function renderProgress(){
   var qs=getQStats(),mastered=0,weak=0,inprog=0,unseen=0;
   var h='<div class="prog-grid">';
@@ -589,8 +532,6 @@ function renderProgress(){
   document.getElementById("progressContent").innerHTML=h;
 }
 function resetStats(){if(!confirm(UI.resetConfirm[L]))return;safeLSRemove("itilv5_qstats");renderProgress();renderSummary();toast("✓");}
-
-// ===== HISTORY =====
 function renderHistory(){
   var h=JSON.parse(safeLSGet("itilv5_history","[]"));
   if(h.length===0){document.getElementById("historyContent").innerHTML='<p style="text-align:center;color:var(--muted);margin:30px 0">'+UI.noHist[L]+'</p>';return;}
@@ -615,8 +556,6 @@ function renderHistory(){
   document.getElementById("historyContent").innerHTML=html;
 }
 function clearHistory(){if(confirm(UI.deleteAll[L])){safeLSRemove("itilv5_history");renderHistory();renderSummary();}}
-
-// ===== KEYBOARD =====
 document.addEventListener("keydown",function(e){
   if(document.getElementById("exam").className.indexOf("active")!==-1){
     if(e.key==="ArrowLeft") prevQ();else if(e.key==="ArrowRight") nextQ();
@@ -631,9 +570,5 @@ document.addEventListener("keydown",function(e){
     else if(e.key===" "||e.key==="Enter"){e.preventDefault();flipCard();}
   }
 });
-
-// ===== BEFOREUNLOAD =====
 window.addEventListener("beforeunload",function(e){if(examActive){autoSave();e.preventDefault();e.returnValue="";}});
-
-// ===== GO =====
 init();

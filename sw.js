@@ -1,4 +1,4 @@
-var CACHE_NAME = 'itilv5-v4.0';
+var CACHE_NAME = 'itilv5-v4.1';
 var ASSETS = [
   './',
   './index.html',
@@ -9,8 +9,6 @@ var ASSETS = [
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
 ];
-
-// Install — cache all assets
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
@@ -20,8 +18,6 @@ self.addEventListener('install', function(e) {
     })
   );
 });
-
-// Activate — clean old caches
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(names) {
@@ -34,21 +30,17 @@ self.addEventListener('activate', function(e) {
     })
   );
 });
-
-// Fetch — cache first, then network
 self.addEventListener('fetch', function(e) {
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       if (cached) {
-        // Return cache, but update in background
-        var fetchPromise = fetch(e.request).then(function(response) {
+        fetch(e.request).then(function(response) {
           if (response && response.status === 200) {
             var clone = response.clone();
             caches.open(CACHE_NAME).then(function(cache) {
               cache.put(e.request, clone);
             });
           }
-          return response;
         }).catch(function() {});
         return cached;
       }

@@ -63,11 +63,11 @@ resetStats:["🗑 Reiniciar Stats","🗑 Reset Stats"],
 resetConfirm:["¿Eliminar estadísticas de preguntas?","Delete question stats?"],
 avgTime:["Promedio","Average"],timeStats:["⏱ Tiempo","⏱ Time"],secQ:["seg/preg","sec/q"],
 domPerf:["📊 Rendimiento por Dominio (acumulado)","📊 Domain Performance (cumulative)"],
-infoSub:["Dashboard v4.0","Dashboard v4.0"],
+infoSub:["Dashboard v4.1","Dashboard v4.1"],
 infoFeatTitle:["🛠 Features","🛠 Features"],
 infoKeyTitle:["⌨️ Atajos de Teclado","⌨️ Keyboard Shortcuts"],
 infoKC1:["Tecla","Key"],infoKC2:["Acción","Action"],
-infoFooter:["Syllabus PeopleCert v5.0 (Feb 2026)\nDashboard v4.0 — 240 Preguntas — Mayo 2026","PeopleCert v5.0 Syllabus (Feb 2026)\nDashboard v4.0 — 240 Questions — May 2026"],
+infoFooter:["Syllabus PeopleCert v5.0 (Feb 2026)\nDashboard v4.1 — 240 Preguntas — Mayo 2026","PeopleCert v5.0 Syllabus (Feb 2026)\nDashboard v4.1 — 240 Questions — May 2026"],
 exitConfirm:["¿Salir del examen? Se perderá el progreso.","Exit exam? Progress will be lost."]
 };
 var FEATS=[
