@@ -144,15 +144,22 @@ function renderSummary(){
     var e=hist[i];
     if(e.dc&&e.dt){for(var d=0;d<7;d++){tc[d]+=(e.dc[d]||0);tt[d]+=(e.dt[d]||0);}}
   }
+  var hasHist=false;
+  for(var d=0;d<7;d++){if(tt[d]>0) hasHist=true;}
   var str=[],wk=[];
-  for(var d=0;d<7;d++){
-    if(tt[d]===0) continue;
-    var dp=Math.round((tc[d]/tt[d])*100);
-    if(dp>=80) str.push({icon:DICONS[d],name:DN[d][L],pct:dp});
-    else if(dp<65) wk.push({icon:DICONS[d],name:DN[d][L],pct:dp});
+  if(hasHist){
+    for(var d=0;d<7;d++){
+      if(tt[d]===0) continue;
+      var dp=Math.round((tc[d]/tt[d])*100);
+      if(dp>=80) str.push({icon:DICONS[d],name:DN[d][L],pct:dp});
+      else if(dp<65) wk.push({icon:DICONS[d],name:DN[d][L],pct:dp});
+    }
   }
-  if(str.length>0||wk.length>0){
-    h+='<div class="results-box" style="padding:18px">';
+  h+='<div class="results-box" style="padding:18px">';
+  if(!hasHist){
+    h+='<h3 style="color:var(--muted);margin:0 0 8px">'+UI.strengths[L]+' / '+UI.improve[L]+'</h3>';
+    h+='<div style="color:var(--muted);font-size:.9em">'+UI.noStrWk[L]+'</div>';
+  } else if(str.length>0||wk.length>0){
     if(str.length>0){
       h+='<h3 style="color:var(--green);margin:0 0 8px">'+UI.strengths[L]+'</h3>';
       for(var i=0;i<str.length;i++) h+='<div style="margin:4px 0;font-size:.9em">'+str[i].icon+' '+str[i].name+' <span style="color:var(--green);font-weight:700">'+str[i].pct+'%</span></div>';
@@ -162,8 +169,52 @@ function renderSummary(){
       h+='<h3 style="color:var(--red);margin:0 0 8px">'+UI.improve[L]+'</h3>';
       for(var i=0;i<wk.length;i++) h+='<div style="margin:4px 0;font-size:.9em">'+wk[i].icon+' '+wk[i].name+' <span style="color:var(--red);font-weight:700">'+wk[i].pct+'%</span></div>';
     }
-    h+='</div>';
+  } else {
+    h+='<h3 style="color:var(--green);margin:0 0 8px">'+UI.strengths[L]+' / '+UI.improve[L]+'</h3>';
+    h+='<div style="color:var(--green);font-size:.9em">✅ '+UI.planReady[L]+'</div>';
   }
+  h+='</div>';
+  h+='<div class="results-box" style="padding:18px">';
+  h+='<h3 style="color:var(--blue);margin:0 0 10px">'+UI.planTitle[L]+'</h3>';
+  if(!hasHist){
+    h+='<div style="color:var(--muted);font-size:.9em">'+UI.planNoPractice[L]+'</div>';
+  } else {
+    var weakD=[],midD=[];
+    for(var d=0;d<7;d++){
+      if(tt[d]===0) continue;
+      var dp=Math.round((tc[d]/tt[d])*100);
+      if(dp<65) weakD.push({d:d,pct:dp});
+      else if(dp<80) midD.push({d:d,pct:dp});
+    }
+    weakD.sort(function(a,b){return a.pct-b.pct;});
+    midD.sort(function(a,b){return a.pct-b.pct;});
+    if(weakD.length===0&&midD.length===0){
+      h+='<div style="font-size:.95em;color:var(--green)">'+UI.planReady[L]+'</div>';
+    } else {
+      var step=1;
+      for(var i=0;i<weakD.length;i++){
+        var wd=weakD[i];
+        h+='<div class="plan-step"><div class="plan-num">'+step+'</div>';
+        h+='<div class="plan-txt">📚 '+UI.planStudy[L]+' <strong>'+DICONS[wd.d]+' '+DN[wd.d][L]+'</strong> <span style="color:var(--red)">('+wd.pct+'%)</span></div></div>';
+        step++;
+      }
+      h+='<div class="plan-step"><div class="plan-num">'+step+'</div>';
+      h+='<div class="plan-txt">'+UI.planSmart[L]+'</div></div>';
+      step++;
+      for(var i=0;i<midD.length;i++){
+        var md=midD[i];
+        h+='<div class="plan-step"><div class="plan-num">'+step+'</div>';
+        h+='<div class="plan-txt">📚 '+UI.planReinforce[L]+' <strong>'+DICONS[md.d]+' '+DN[md.d][L]+'</strong> <span style="color:var(--orange)">('+md.pct+'%)</span></div></div>';
+        step++;
+      }
+      h+='<div class="plan-step"><div class="plan-num">'+step+'</div>';
+      h+='<div class="plan-txt">'+UI.planAdaptive[L]+'</div></div>';
+      step++;
+      h+='<div class="plan-step"><div class="plan-num">'+step+'</div>';
+      h+='<div class="plan-txt">'+UI.planMock[L]+'</div></div>';
+    }
+  }
+  h+='</div>';
   document.getElementById("summaryCards").innerHTML=h;
 }
 function renderDomainCards(){
@@ -343,7 +394,12 @@ function startAdaptive(){
   var dC=[0,0,0,0,0,0,0],dT=[0,0,0,0,0,0,0];
   for(var i=0;i<ALL.length;i++){var s=qs[ALL[i].id];if(s&&s.attempts>0){dT[ALL[i].d]++;dC[ALL[i].d]+=s.correct;}}
   var weights=[],totalW=0;
-  for(var d=0;d<7;d++){var p=dT[d]>0?dC[d]/dT[d]:0.5;weights[d]=Math.max(0.1,(1-p))*DCOUNTS[d];totalW+=weights[d];}
+  for(var d=0;d<7;d++){
+    var p=0.5;
+    if(dT[d]>0) p=dC[d]/dT[d];
+    weights[d]=Math.max(0.1,(1-p))*DCOUNTS[d];
+    totalW+=weights[d];
+  }
   var simTotal=40,dA=[0,0,0,0,0,0,0],assigned=0;
   for(var d=0;d<7;d++){dA[d]=Math.max(1,Math.round((weights[d]/totalW)*simTotal));assigned+=dA[d];}
   while(assigned>simTotal){for(var d=6;d>=0&&assigned>simTotal;d--){if(dA[d]>1){dA[d]--;assigned--;}}}
@@ -352,7 +408,13 @@ function startAdaptive(){
   for(var d=0;d<7;d++){
     var pool=[];
     for(var i=0;i<ALL.length;i++){if(ALL[i].d===d) pool.push(ALL[i]);}
-    pool.sort(function(a,b){var sa=qs[a.id],sb=qs[b.id];var ra=sa&&sa.attempts>0?sa.correct/sa.attempts:0.5;var rb=sb&&sb.attempts>0?sb.correct/sb.attempts:0.5;return ra-rb;});
+    pool.sort(function(a,b){
+      var sa=qs[a.id],sb=qs[b.id];
+      var ra=0.5,rb=0.5;
+      if(sa&&sa.attempts>0) ra=sa.correct/sa.attempts;
+      if(sb&&sb.attempts>0) rb=sb.correct/sb.attempts;
+      return ra-rb;
+    });
     for(var j=0;j<dA[d]&&j<pool.length;j++) examQs.push(pool[j]);
   }
   examQs=shuffle(examQs);
@@ -482,7 +544,8 @@ function submitExam(){
   var entry={date:now.toLocaleDateString("es-CO")+" "+now.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"}),mode:modeStr,total:total,correct:correct,pct:pct,pass:pass,dc:{},dt:{},avgTime:avgT,bestStreak:bestStreak};
   for(var d=0;d<7;d++){entry.dc[d]=dc[d];entry.dt[d]=dt[d];}
   hist.push(entry);safeLSSet("itilv5_history",JSON.stringify(hist));
-  var pt=pass?UI.pass[L]:UI.fail[L];
+  var pt=UI.fail[L];
+  if(pass) pt=UI.pass[L];
   var h='<div class="results-box"><h2 style="text-align:center">'+pt+'</h2>';
   h+='<div class="score-big '+(pass?"pass":"fail")+'">'+pct+'%</div>';
   h+='<p style="text-align:center;color:var(--muted);margin:10px 0">'+correct+' '+UI.of[L]+' '+total+' '+UI.correct[L]+' — '+UI.approval[L]+': 65%</p>';

@@ -74,6 +74,10 @@ th{background:var(--bg2);color:var(--blue);font-weight:600}
 .sum-card .si{font-size:1.6em;flex-shrink:0}.sum-card .sn{font-size:1.8em;font-weight:700}
 .sum-card .sl{color:var(--muted);font-size:.9em;margin-top:2px}
 .sum-row{display:flex;gap:12px}
+.plan-step{display:flex;align-items:flex-start;gap:12px;margin:8px 0;padding:10px 14px;background:var(--bg3);border-radius:8px;animation:fadeIn .3s ease}
+.plan-num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85em;flex-shrink:0}
+.plan-txt{font-size:.9em;line-height:1.4}
+.plan-txt strong{color:var(--blue)}
 #examInfo{text-align:center;color:var(--muted);margin:5px 0;font-size:.95em}
 #examInfo strong{font-size:1.05em}
 #examInfo .exam-topics{font-size:.88em;margin-top:4px;line-height:1.5}
