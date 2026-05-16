@@ -1,7 +1,7 @@
 {
-  "name": "ITIL v5 Foundation Dashboard",
+  "name": "ITIL v5 Foundation — Practice Exam Dashboard",
   "short_name": "ITIL v5",
-  "description": "240 bilingual questions · Mock exams · Smart review · Flashcards · Adaptive exams",
+  "description": "620 bilingual questions · Mock exams · Smart review · Flashcards · Adaptive exams",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

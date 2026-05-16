@@ -1,12 +1,14 @@
 var L=1,T=0,realMode=false;
 var DICONS=["📖","🔲","🔄","⚙️","🗺️","🤖","🔗"];
 var DCOLORS=["#58a6ff","#f0883e","#238636","#bc8cff","#f778ba","#79c0ff","#ffa657"];
-var DN=[["D1 Términos y Conceptos","D1 Key Terms & Concepts"],["D2 Las 4 Dimensiones","D2 The 4 Dimensions"],["D3 PSLM (Lifecycle)","D3 PSLM (Lifecycle)"],["D4 SVS, Principios y Prácticas","D4 SVS, Principles & Practices"],["D5 Flujos de Valor y DX","D5 Value Streams & DX"],["D6 IA y Modelo 6C","D6 AI & 6C Model"],["D7 Frameworks","D7 Frameworks"]];
-var DFULL=[["Términos y Definiciones Clave","Key Terms & Definitions"],["Las Cuatro Dimensiones","The Four Dimensions"],["Ciclo de Vida del Producto y Servicio (PSLM)","Product & Service Lifecycle (PSLM)"],["Sistema de Valor del Servicio (SVS)","Service Value System (SVS)"],["Flujos de Valor y Customer Journey","Value Streams & Customer Journey"],["IA, Automatización y Gobernanza Digital","AI, Automation & Digital Governance"],["Integración con Frameworks y Estándares","Integration with Frameworks & Standards"]];
-var DTOPICS=[["Co-creación de valor, utility, warranty, experience, sustainability, roles, interacciones","Value co-creation, utility, warranty, experience, sustainability, roles, interactions"],["O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier","O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier"],["8 actividades del lifecycle, feedback loops, stepping stones, Agile, retiro de servicios","8 lifecycle activities, feedback loops, stepping stones, Agile, service retirement"],["Principios guía, gobernanza EDM, cadena de valor, 34 prácticas, mejora continua","Guiding principles, EDM governance, value chain, 34 practices, continual improvement"],["Value streams, customer journey, touchpoints, demand triggers, mapeo, optimización","Value streams, customer journey, touchpoints, demand triggers, mapping, optimization"],["AI 6C Model, ética de IA, automatización, gobernanza digital, EDM, riesgos de IA","AI 6C Model, AI ethics, automation, digital governance, EDM, AI risks"],["Agile, DevOps, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE","Agile, DevOps, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE"]];
-var DCOUNTS=[0,0,0,0,0,0,0],DSIM=[0,0,0,0,0,0,0];
+var DN=[["D1 Términos y Conceptos","D1 Key Terms & Concepts"],["D2 Las 4 Dimensiones","D2 The 4 Dimensions"],["D3 PSLM (Lifecycle)","D3 PSLM (Lifecycle)"],["D4 Sistema de Valor ITIL","D4 ITIL Value System"],["D5 Flujos de Valor","D5 Value Streams"],["D6 ITIL e IA","D6 ITIL & AI"],["D7 ITIL y Otros Marcos","D7 ITIL & Frameworks"]];
+var DFULL=[["Términos y Definiciones Clave","Key Terms & Definitions"],["Las Cuatro Dimensiones","The Four Dimensions"],["Ciclo de Vida del Producto y Servicio (PSLM)","Product & Service Lifecycle (PSLM)"],["Sistema de Valor ITIL (SVS)","ITIL Value System (SVS)"],["Identificación, Mapeo y Gestión de Flujos de Valor","Identification, Mapping & Management of Value Streams"],["ITIL e IA","ITIL and AI"],["ITIL y Otros Marcos de Trabajo","ITIL and Other Frameworks"]];
+var DTOPICS=[["Co-creación de valor, utility, warranty, experience, sustainability, roles, interacciones","Value co-creation, utility, warranty, experience, sustainability, roles, interactions"],["O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier","O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier"],["8 actividades del lifecycle, feedback loops, stepping stones, Agile, retiro de servicios","8 lifecycle activities, feedback loops, stepping stones, Agile, service retirement"],["Principios guía, gobernanza EDM, cadena de valor, 34 prácticas, mejora continua","Guiding principles, EDM governance, value chain, 34 practices, continual improvement"],["Value streams, customer journey, touchpoints, demand triggers, mapeo, optimización","Value streams, customer journey, touchpoints, demand triggers, mapping, optimization"],["AI 6C Model, ética de IA, automatización, gobernanza digital, EDM, riesgos de IA","AI 6C Model, AI ethics, automation, digital governance, EDM, AI risks"],["DevOps, PRINCE2, Agile, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE","DevOps, PRINCE2, Agile, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE"]];
+var DCOUNTS=[0,0,0,0,0,0,0];
+var DSIM=[0,0,0,0,0,0,0];
+var DWEIGHT=[30,10,10,40,5,2.5,2.5];
 var UI={
-title:["🎓 ITIL v5 Foundation — Dashboard","🎓 ITIL v5 Foundation — Dashboard"],
+title:["🎓 ITIL v5 Foundation — Practice Exam Dashboard","🎓 ITIL v5 Foundation — Practice Exam Dashboard"],
 qs:["Preguntas","Questions"],
 home:["🏠 Inicio","🏠 Home"],
 hist:["📊 Historial","📊 History"],
@@ -69,7 +71,7 @@ examsDone:["Exámenes Realizados","Exams Taken"],
 bestScore:["Mejor Score","Best Score"],
 domTitle:["📚 Dominios de Estudio","📚 Study Domains"],
 domLabel:["Dominio","Domain"],
-slTitle:["🎯 Examen Simulado ITIL v5 Foundation","🎯 ITIL v5 Foundation Mock Exam"],
+slTitle:["🎯 Examen Simulado","🎯 Mock Exam"],
 slDesc:["40 preguntas aleatorias proporcionales al peso de cada dominio · 60 minutos · 65% para aprobar (26/40)","40 random questions proportional to each domain's weight · 60 minutes · 65% to pass (26/40)"],
 slCD:["Dominio","Domain"],
 slCW:["Peso","Weight"],
@@ -107,31 +109,35 @@ planMock:["🏆 Examen Simulado en modo PeopleCert Real","🏆 Mock Exam in Peop
 planReady:["🏆 ¡Estás listo! Haz un simulado PeopleCert Real para confirmar.","🏆 You're ready! Take a PeopleCert Real mock to confirm."],
 planNoPractice:["Practica para ver tu plan personalizado.","Practice to see your personalized plan."],
 noStrWk:["Practica para ver tus fortalezas y debilidades.","Practice to see your strengths and weaknesses."],
-infoSub:["Dashboard v4.1b","Dashboard v4.1b"],
+infoSub:["Practice Exam Dashboard v5.0","Practice Exam Dashboard v5.0"],
 infoFeatTitle:["🛠 Features","🛠 Features"],
 infoKeyTitle:["⌨️ Atajos de Teclado","⌨️ Keyboard Shortcuts"],
 infoKC1:["Tecla","Key"],
 infoKC2:["Acción","Action"],
-infoFooter:["Syllabus PeopleCert v5.0 (Feb 2026)\nDashboard v4.1b — 240 Preguntas — Mayo 2026","PeopleCert v5.0 Syllabus (Feb 2026)\nDashboard v4.1b — 240 Questions — May 2026"],
+infoDisclaimer:["🤖 100% generado por IA. No afiliado a PeopleCert, Axelos ni ningún organismo oficial. El contenido puede tener imprecisiones — úsalo como complemento de estudio y siempre verifica con el material oficial. ¡Tú pones el esfuerzo, la IA pone la práctica! 💪","🤖 100% AI-generated. Not affiliated with PeopleCert, Axelos or any official body. Content may contain inaccuracies — use it as a study complement and always verify with official material. You bring the effort, AI brings the practice! 💪"],
+infoFooter:["Syllabus PeopleCert v5.0 (Feb 2026)\nDashboard v5.0 — 620 Preguntas — Mayo 2026\n🤖 100% generado por IA. No afiliado a PeopleCert, Axelos ni ningún organismo oficial.\nEl contenido puede tener imprecisiones — úsalo como complemento de estudio y siempre verifica con el material oficial.\n¡Tú pones el esfuerzo, la IA pone la práctica! 💪","PeopleCert v5.0 Syllabus (Feb 2026)\nDashboard v5.0 — 620 Questions — May 2026\n🤖 100% AI-generated. Not affiliated with PeopleCert, Axelos or any official body.\nContent may contain inaccuracies — use it as a study complement and always verify with official material.\nYou bring the effort, AI brings the practice! 💪"],
 exitConfirm:["¿Salir del examen? Se perderá el progreso.","Exit exam? Progress will be lost."]
 };
 var FEATS=[
-[["📝 240 Preguntas","Bilingües ES/EN · Conceptuales, escenarios reales y tipo negativa"],["📝 240 Questions","Bilingual ES/EN · Conceptual, real-world scenarios and negative type"]],
-[["🌐 ES/EN","Cambia TODO en tiempo real"],["🌐 ES/EN","Switches EVERYTHING real-time"]],
-[["📚 7 Dominios","Con contexto, temas clave y % de peso"],["📚 7 Domains","With context, key topics and weight %"]],
+[["📝 620 Preguntas","Bilingües ES/EN · Conceptuales, escenarios reales y tipo negativa"],["📝 620 Questions","Bilingual ES/EN · Conceptual, real-world scenarios and negative type"]],
 [["🎯 Simulado","40 Qs proporcionales + timer 60 min + modo PeopleCert"],["🎯 Mock","40 proportional Qs + 60 min timer + PeopleCert mode"]],
-[["📖 Práctica","240 Qs con feedback inmediato por dominio o completa"],["📖 Practice","240 Qs with immediate feedback by domain or full"]],
+[["📚 7 Dominios","Con contexto, temas clave y % de peso"],["📚 7 Domains","With context, key topics and weight %"]],
+[["📖 Práctica Completa","620 Qs con feedback inmediato por dominio o completa"],["📖 Full Practice","620 Qs with immediate feedback by domain or full"]],
 [["🧠 Repaso Inteligente","Practica solo las preguntas que has fallado"],["🧠 Smart Review","Practice only questions you've failed"]],
 [["🎯 Examen Adaptativo","Más preguntas de tus dominios más débiles"],["🎯 Adaptive Exam","More questions from your weakest domains"]],
 [["📇 Flashcards","Modo estudio: pregunta → respuesta sin puntaje"],["📇 Flashcards","Study mode: question → answer without scoring"]],
-[["🎯 Plan Sugerido","Recomendaciones personalizadas según tu rendimiento"],["🎯 Suggested Plan","Personalized recommendations based on your performance"]],
-[["⏱ Tiempo por Pregunta","Estadísticas de velocidad al finalizar examen"],["⏱ Time per Question","Speed stats after finishing exam"]],
-[["📊 Progreso","Tracking por pregunta: dominadas, débiles, sin intentar"],["📊 Progress","Per-question tracking: mastered, weak, unseen"]],
-[["💾 Auto-guardado","Continúa tu examen si cierras el navegador"],["💾 Auto-save","Continue your exam if you close the browser"]],
-[["🔥 Rachas","Contador de respuestas correctas consecutivas"],["🔥 Streaks","Consecutive correct answer counter"]],
-[["📊 Resultados","Score %, desglose, fortalezas/debilidades + acumulado"],["📊 Results","Score %, breakdown, strengths/weaknesses + cumulative"]],
 [["🔍 Revisión","Cada pregunta con respuesta + explicación"],["🔍 Review","Each question with answer + explanation"]],
+[["📊 Resultados","Score %, desglose, fortalezas/debilidades + acumulado"],["📊 Results","Score %, breakdown, strengths/weaknesses + cumulative"]],
+[["🎯 Plan Sugerido","Recomendaciones personalizadas según tu rendimiento"],["🎯 Suggested Plan","Personalized recommendations based on your performance"]],
+[["📊 Progreso","Tracking por pregunta: dominadas, débiles, sin intentar"],["📊 Progress","Per-question tracking: mastered, weak, unseen"]],
 [["📈 Historial","Tendencia + rendimiento acumulado por dominio"],["📈 History","Trend + cumulative domain performance"]],
+[["🔀 Aleatorización","Opciones A/B/C/D reordenadas en cada intento"],["🔀 Randomization","A/B/C/D options reshuffled on every attempt"]],
+[["🚩 Marcar Preguntas","Marca y revisa dudosas antes de finalizar"],["🚩 Flag Questions","Flag and review doubtful ones before finishing"]],
+[["⏱ Tiempo por Pregunta","Estadísticas de velocidad al finalizar examen"],["⏱ Time per Question","Speed stats after finishing exam"]],
+[["🔥 Rachas","Contador de respuestas correctas consecutivas"],["🔥 Streaks","Consecutive correct answer counter"]],
+[["🌐 ES/EN","Cambia TODO en tiempo real"],["🌐 ES/EN","Switches EVERYTHING real-time"]],
+[["💾 Auto-guardado","Continúa tu examen si cierras el navegador"],["💾 Auto-save","Continue your exam if you close the browser"]],
+[["📱 PWA Offline","Instalable en móvil y funciona sin internet"],["📱 PWA Offline","Installable on mobile and works without internet"]],
 [["⌨️ Atajos","← → A-D 1-4 F · visibles en pantalla"],["⌨️ Shortcuts","← → A-D 1-4 F · visible on screen"]],
 [["🌙☀️ Tema","Oscuro / Claro persistente"],["🌙☀️ Theme","Dark / Light persistent"]]
 ];

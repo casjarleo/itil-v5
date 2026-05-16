@@ -1,10 +1,16 @@
-var CACHE_NAME = 'itilv5-v4.1b2';
+var CACHE_NAME = 'itilv5-v5.1';
 var ASSETS = [
   './',
   './index.html',
   './styles.css',
   './config.js',
-  './questions.js',
+  './questions-d1-150q.js',
+  './questions-d2-50q.js',
+  './questions-d3-55q.js',
+  './questions-d4-200q.js',
+  './questions-d5-55q.js',
+  './questions-d6-55q.js',
+  './questions-d7-55q.js',
   './app.js',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
