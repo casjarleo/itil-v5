@@ -492,13 +492,20 @@ function renderQ(){
  updateGrid();
 }
 function selectOpt(idx){
- if(answers[curQ]!==-1) return;
+ if(answers[curQ]!==-1&&!realMode) return;
  const origIdx=optOrder[curQ][idx];
+ if(realMode&&answers[curQ]!==-1){
+  answers[curQ]=origIdx;
+  renderQ();updateGrid();renderExamCounter();autoSave();
+  return;
+ }
  qTimes[curQ]=Math.round((Date.now()-qStartTime)/1000);
  answers[curQ]=origIdx;
- const qObj=examQs[curQ],ok=origIdx===qObj.c;
- updateQStat(qObj.id,ok);
- if(ok){currentStreak++;if(currentStreak>bestStreak)bestStreak=currentStreak;}else{currentStreak=0;}
+ if(!realMode){
+  const qObj=examQs[curQ],ok=origIdx===qObj.c;
+  updateQStat(qObj.id,ok);
+  if(ok){currentStreak++;if(currentStreak>bestStreak)bestStreak=currentStreak;}else{currentStreak=0;}
+ }
  renderQ();updateGrid();renderExamCounter();autoSave();qStartTime=Date.now();
 }
 function trackTime(){if(answers[curQ]===-1){qTimes[curQ]+=Math.round((Date.now()-qStartTime)/1000);}}
@@ -593,6 +600,7 @@ function submitExam(){
  if(timerID){clearInterval(timerID);timerID=null;}
  examActive=false;clearAutoSave();
  const sc=calcScores();
+ if(realMode){for(let i=0;i<examQs.length;i++){updateQStat(examQs[i].id,answers[i]===examQs[i].c);}}
  const modeStr=getModeStr();
  const avgT=calcTimeStats();
  saveHistoryEntry(sc,modeStr,avgT);
