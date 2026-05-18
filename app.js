@@ -573,17 +573,20 @@ function buildResultsHTML(sc,avgT){
  if(bestStreak>=3) h+=' \u00b7 \uD83D\uDD25 '+bestStreak;
  h+='</p></div>';
  h+='<div class="results-box"><h2>'+UI.breakdown[L]+'</h2>';
+ h+='<div class="hist-domains" style="border-top:none;padding-top:0">';
  const str=[],wk=[];
  for(let d=0;d<7;d++){
  if(sc.dt[d]===0) continue;
  let dp=Math.round((sc.dc[d]/sc.dt[d])*100),col="var(--red)";
  if(dp>=80) col="var(--green)";else if(dp>=65) col="var(--orange)";
- h+='<div class="domain-bar"><div class="name">'+DICONS[d]+' '+DN[d][L].split(" ").slice(0,2).join(" ")+'</div>';
- h+='<div class="bar-bg"><div class="bar-fill" style="width:'+dp+'%;background:'+col+'"></div></div>';
- h+='<div class="pct" style="color:'+col+'">'+dp+'% ('+sc.dc[d]+'/'+sc.dt[d]+')</div></div>';
+ h+='<div class="hist-dom-row">';
+ h+='<div class="hist-dom-title">'+DICONS[d]+' '+DN[d][L]+'</div>';
+ h+='<div class="hist-dom-bar"><div class="hist-dom-fill" style="width:'+dp+'%;background:'+col+'"></div></div>';
+ h+='<div class="hist-dom-pct" style="color:'+col+'">'+dp+'% ('+sc.dc[d]+'/'+sc.dt[d]+')</div>';
+ h+='</div>';
  if(dp>=80) str.push(DICONS[d]+" "+DN[d][L]);else if(dp<65) wk.push(DICONS[d]+" "+DN[d][L]);
  }
- h+='</div>';
+ h+='</div></div>';
  if(str.length>0||wk.length>0){
  h+='<div class="results-box">';
  if(str.length>0){h+='<h3 style="color:var(--green)">'+UI.strengths[L]+'</h3><ul>';for(let i=0;i<str.length;i++) h+='<li>'+str[i]+'</li>';h+='</ul>';}
