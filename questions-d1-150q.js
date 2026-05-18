@@ -1,8 +1,8 @@
 // ===== questions-d1.js — D1: Conceptos Clave ITIL v5 (150 preguntas) =====
-// Generado: 2026-05-15 | ITIL v5 Foundation Dashboard v5.0
+// Generado: 2026-05-15 | ITIL v5 Foundation Dashboard v5.1
 // 55 existentes + 35 lote1 + 30 lote2 + 30 lote3 — D1 CERRADO
 // Tipos: Estandar(86) Escenario(26) Negativa(13) PalFaltante(14) Lista(11)
-var questionsD1 = [
+const questionsD1 = [
 [0, 1, 'Cual describe MEJOR la co-creacion de valor?', 'Which BEST describes value co-creation?', ['Proveedor entrega valor solo', 'Se crea colaborativamente entre proveedor y consumidor', 'Consumidor define y proveedor implementa', 'Lo determina el precio'], ['Provider delivers value alone', 'Created collaboratively between provider and consumer', 'Consumer defines, provider implements', 'Determined by price'], 1, 'Co-creacion=relacion activa entre proveedor y consumidor.', 'Co-creation=active relationship between provider and consumer.'],
 [0, 2, 'Que describe la utilidad (utility)?', 'What describes utility?', ['Disponibilidad del servicio', 'Funcionalidad ofrecida para satisfacer una necesidad', 'Costo total del servicio', 'Experiencia del usuario'], ['Service availability', 'Functionality offered to meet a need', 'Total service cost', 'User experience'], 1, 'Utility=aptitud para el proposito (fitness for purpose).', 'Utility=fitness for purpose.'],
 [0, 3, 'En ITIL v5, la garantia (warranty) asegura que un servicio es apto para el uso. Que aspectos abarca?', 'In ITIL v5, warranty ensures a service is fit for use. What aspects does it cover?', ['Funcionalidad ofrecida al cliente', 'Disponibilidad, capacidad, continuidad y seguridad', 'Experiencia del usuario final', 'Costo total de propiedad'], ['Functionality offered to the customer', 'Availability, capacity, continuity, and security', 'End-user experience', 'Total cost of ownership'], 1, 'Warranty=apto para el uso: disponibilidad, capacidad, continuidad, seguridad.', 'Warranty=fit for use: availability, capacity, continuity, security.'],

@@ -1,13 +1,13 @@
-var L=1,T=0,realMode=false;
-var DICONS=["📖","🔲","🔄","⚙️","🗺️","🤖","🔗"];
-var DCOLORS=["#58a6ff","#f0883e","#238636","#bc8cff","#f778ba","#79c0ff","#ffa657"];
-var DN=[["D1 Términos y Conceptos","D1 Key Terms & Concepts"],["D2 Las 4 Dimensiones","D2 The 4 Dimensions"],["D3 PSLM (Lifecycle)","D3 PSLM (Lifecycle)"],["D4 Sistema de Valor ITIL","D4 ITIL Value System"],["D5 Flujos de Valor","D5 Value Streams"],["D6 ITIL e IA","D6 ITIL & AI"],["D7 ITIL y Otros Marcos","D7 ITIL & Frameworks"]];
-var DFULL=[["Términos y Definiciones Clave","Key Terms & Definitions"],["Las Cuatro Dimensiones","The Four Dimensions"],["Ciclo de Vida del Producto y Servicio (PSLM)","Product & Service Lifecycle (PSLM)"],["Sistema de Valor ITIL (SVS)","ITIL Value System (SVS)"],["Identificación, Mapeo y Gestión de Flujos de Valor","Identification, Mapping & Management of Value Streams"],["ITIL e IA","ITIL and AI"],["ITIL y Otros Marcos de Trabajo","ITIL and Other Frameworks"]];
-var DTOPICS=[["Co-creación de valor, utility, warranty, experience, sustainability, roles, interacciones","Value co-creation, utility, warranty, experience, sustainability, roles, interactions"],["O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier","O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier"],["8 actividades del lifecycle, feedback loops, stepping stones, Agile, retiro de servicios","8 lifecycle activities, feedback loops, stepping stones, Agile, service retirement"],["Principios guía, gobernanza EDM, cadena de valor, 34 prácticas, mejora continua","Guiding principles, EDM governance, value chain, 34 practices, continual improvement"],["Value streams, customer journey, touchpoints, demand triggers, mapeo, optimización","Value streams, customer journey, touchpoints, demand triggers, mapping, optimization"],["AI 6C Model, ética de IA, automatización, gobernanza digital, EDM, riesgos de IA","AI 6C Model, AI ethics, automation, digital governance, EDM, AI risks"],["DevOps, PRINCE2, Agile, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE","DevOps, PRINCE2, Agile, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE"]];
-var DCOUNTS=[0,0,0,0,0,0,0];
-var DSIM=[0,0,0,0,0,0,0];
-var DWEIGHT=[30,10,10,40,5,2.5,2.5];
-var UI={
+let L=1,T=0,realMode=false;
+const DICONS=["📖","🔲","🔄","⚙️","🗺️","🤖","🔗"];
+const DCOLORS=["#58a6ff","#f0883e","#238636","#bc8cff","#f778ba","#79c0ff","#ffa657"];
+const DN=[["D1 Términos y Conceptos","D1 Key Terms & Concepts"],["D2 Las 4 Dimensiones","D2 The 4 Dimensions"],["D3 PSLM (Lifecycle)","D3 PSLM (Lifecycle)"],["D4 Sistema de Valor ITIL","D4 ITIL Value System"],["D5 Flujos de Valor","D5 Value Streams"],["D6 ITIL e IA","D6 ITIL & AI"],["D7 ITIL y Otros Marcos","D7 ITIL & Frameworks"]];
+const DFULL=[["Términos y Definiciones Clave","Key Terms & Definitions"],["Las Cuatro Dimensiones","The Four Dimensions"],["Ciclo de Vida del Producto y Servicio (PSLM)","Product & Service Lifecycle (PSLM)"],["Sistema de Valor ITIL (SVS)","ITIL Value System (SVS)"],["Identificación, Mapeo y Gestión de Flujos de Valor","Identification, Mapping & Management of Value Streams"],["ITIL e IA","ITIL and AI"],["ITIL y Otros Marcos de Trabajo","ITIL and Other Frameworks"]];
+const DTOPICS=[["Co-creación de valor, utility, warranty, experience, sustainability, roles, interacciones","Value co-creation, utility, warranty, experience, sustainability, roles, interactions"],["O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier","O&P, I&T, S&P, FV&P, PESTLE, AI 6C Model, partner vs supplier"],["8 actividades del lifecycle, feedback loops, stepping stones, Agile, retiro de servicios","8 lifecycle activities, feedback loops, stepping stones, Agile, service retirement"],["Principios guía, gobernanza EDM, cadena de valor, 34 prácticas, mejora continua","Guiding principles, EDM governance, value chain, 34 practices, continual improvement"],["Value streams, customer journey, touchpoints, demand triggers, mapeo, optimización","Value streams, customer journey, touchpoints, demand triggers, mapping, optimization"],["AI 6C Model, ética de IA, automatización, gobernanza digital, EDM, riesgos de IA","AI 6C Model, AI ethics, automation, digital governance, EDM, AI risks"],["DevOps, PRINCE2, Agile, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE","DevOps, PRINCE2, Agile, Lean, COBIT, ISO 20000, SIAM, TOGAF, SAFe, SRE"]];
+let DCOUNTS=[0,0,0,0,0,0,0];
+let DSIM=[0,0,0,0,0,0,0];
+const DWEIGHT=[30,10,10,40,5,2.5,2.5];
+const UI={
 title:["🎓 ITIL v5 Foundation — Practice Exam Dashboard","🎓 ITIL v5 Foundation — Practice Exam Dashboard"],
 qs:["Preguntas","Questions"],
 home:["🏠 Inicio","🏠 Home"],
@@ -109,16 +109,16 @@ planMock:["🏆 Examen Simulado en modo PeopleCert Real","🏆 Mock Exam in Peop
 planReady:["🏆 ¡Estás listo! Haz un simulado PeopleCert Real para confirmar.","🏆 You're ready! Take a PeopleCert Real mock to confirm."],
 planNoPractice:["Practica para ver tu plan personalizado.","Practice to see your personalized plan."],
 noStrWk:["Practica para ver tus fortalezas y debilidades.","Practice to see your strengths and weaknesses."],
-infoSub:["Practice Exam Dashboard v5.0","Practice Exam Dashboard v5.0"],
+infoSub:["Practice Exam Dashboard v5.1","Practice Exam Dashboard v5.1"],
 infoFeatTitle:["🛠 Features","🛠 Features"],
 infoKeyTitle:["⌨️ Atajos de Teclado","⌨️ Keyboard Shortcuts"],
 infoKC1:["Tecla","Key"],
 infoKC2:["Acción","Action"],
 infoDisclaimer:["🤖 100% generado por IA. No afiliado a PeopleCert, Axelos ni ningún organismo oficial. El contenido puede tener imprecisiones — úsalo como complemento de estudio y siempre verifica con el material oficial. ¡Tú pones el esfuerzo, la IA pone la práctica! 💪","🤖 100% AI-generated. Not affiliated with PeopleCert, Axelos or any official body. Content may contain inaccuracies — use it as a study complement and always verify with official material. You bring the effort, AI brings the practice! 💪"],
-infoFooter:["Syllabus PeopleCert v5.0 (Feb 2026)\nDashboard v5.0 — 620 Preguntas — Mayo 2026\n🤖 100% generado por IA. No afiliado a PeopleCert, Axelos ni ningún organismo oficial.\nEl contenido puede tener imprecisiones — úsalo como complemento de estudio y siempre verifica con el material oficial.\n¡Tú pones el esfuerzo, la IA pone la práctica! 💪","PeopleCert v5.0 Syllabus (Feb 2026)\nDashboard v5.0 — 620 Questions — May 2026\n🤖 100% AI-generated. Not affiliated with PeopleCert, Axelos or any official body.\nContent may contain inaccuracies — use it as a study complement and always verify with official material.\nYou bring the effort, AI brings the practice! 💪"],
+infoFooter:["Syllabus PeopleCert v5.0 (Feb 2026)\nDashboard v5.1 — 620 Preguntas — Mayo 2026\n🤖 100% generado por IA. No afiliado a PeopleCert, Axelos ni ningún organismo oficial.\nEl contenido puede tener imprecisiones — úsalo como complemento de estudio y siempre verifica con el material oficial.\n¡Tú pones el esfuerzo, la IA pone la práctica! 💪","PeopleCert v5.0 Syllabus (Feb 2026)\nDashboard v5.1 — 620 Questions — May 2026\n🤖 100% AI-generated. Not affiliated with PeopleCert, Axelos or any official body.\nContent may contain inaccuracies — use it as a study complement and always verify with official material.\nYou bring the effort, AI brings the practice! 💪"],
 exitConfirm:["¿Salir del examen? Se perderá el progreso.","Exit exam? Progress will be lost."]
 };
-var FEATS=[
+const FEATS=[
 [["📝 620 Preguntas","Bilingües ES/EN · Conceptuales, escenarios reales y tipo negativa"],["📝 620 Questions","Bilingual ES/EN · Conceptual, real-world scenarios and negative type"]],
 [["🎯 Simulado","40 Qs proporcionales + timer 60 min + modo PeopleCert"],["🎯 Mock","40 proportional Qs + 60 min timer + PeopleCert mode"]],
 [["📚 7 Dominios","Con contexto, temas clave y % de peso"],["📚 7 Domains","With context, key topics and weight %"]],
@@ -141,7 +141,7 @@ var FEATS=[
 [["⌨️ Atajos","← → A-D 1-4 F · visibles en pantalla"],["⌨️ Shortcuts","← → A-D 1-4 F · visible on screen"]],
 [["🌙☀️ Tema","Oscuro / Claro persistente"],["🌙☀️ Theme","Dark / Light persistent"]]
 ];
-var KEYS=[
+const KEYS=[
 [["← →","Anterior / siguiente"],["← →","Previous / next"]],
 [["A B C D","Seleccionar respuesta"],["A B C D","Select answer"]],
 [["1 2 3 4","Seleccionar (alt)"],["1 2 3 4","Select (alt)"]],

@@ -1,8 +1,8 @@
 // ===== questions-d2.js — D2: Las Cuatro Dimensiones (50 preguntas) =====
-// Generado: 2026-05-15 | ITIL v5 Foundation Dashboard v5.0
+// Generado: 2026-05-15 | ITIL v5 Foundation Dashboard v5.1
 // 24 existentes (3 reclasificadas a D6) + 26 nuevas
 // Tipos: Estandar(28) Escenario(12) Negativa(3) PalFaltante(4) Lista(3) | Reclasif: Q43,Q51,Q65→D6
-var questionsD2 = [
+const questionsD2 = [
 [1,1,"Cuantas dimensiones tiene la gestion de productos y servicios en ITIL v5?","How many dimensions does ITIL v5 product and service management have?",["2","3","4","5"],["2","3","4","5"],2,"4 dimensiones: O&P, I&T, S&P, FV&P.","4 dimensions: O&P, I&T, S&P, VS&P."],
 [1,2,"Que dimension aborda la cultura, habilidades y roles organizacionales?","Which dimension addresses culture, skills, and organizational roles?",["Informacion y Tecnologia","Organizaciones y Personas","Socios y Proveedores","Flujos de Valor y Procesos"],["Information and Technology","Organizations and People","Partners and Suppliers","Value Streams and Processes"],1,"O&P aborda cultura, habilidades, roles y estructura organizacional.","O&P addresses culture, skills, roles, and organizational structure."],
 [1,3,"Que significa el acronimo PESTLE?","What does the acronym PESTLE stand for?",["Proceso, Estrategia, Servicio, Tecnologia, Logistica, Evaluacion","Politico, Economico, Social, Tecnologico, Legal, Ambiental","Planificacion, Ejecucion, Soporte, Transicion, Liderazgo, Evaluacion","Producto, Experiencia, Seguridad, Transformacion, Lean, Eficiencia"],["Process, Strategy, Service, Technology, Logistics, Evaluation","Political, Economic, Social, Technological, Legal, Environmental","Planning, Execution, Support, Transition, Leadership, Evaluation","Product, Experience, Security, Transformation, Lean, Efficiency"],1,"PESTLE=Political, Economic, Social, Technological, Legal, Environmental.","PESTLE=Political, Economic, Social, Technological, Legal, Environmental."],

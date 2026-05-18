@@ -1,8 +1,8 @@
 // ===== questions-d3.js — D3: PSLM Lifecycle (55 preguntas) =====
-// Generado: 2026-05-15 | ITIL v5 Foundation Dashboard v5.0
+// Generado: 2026-05-15 | ITIL v5 Foundation Dashboard v5.1
 // 35 existentes (Q94 reescrita, Q106→D4) + 20 nuevas
 // Tipos: Estandar(34) Escenario(12) Negativa(2) PalFaltante(4) Lista(3) | Reclasif: Q106→D4
-var questionsD3 = [
+const questionsD3 = [
 [2, 1, 'Cuantas actividades tiene el Ciclo de Vida del Producto y Servicio (PSLM)?', 'How many activities does the Product and Service Lifecycle (PSLM) have?', ['5', '6', '8', '10'], ['5', '6', '8', '10'], 2, 'El PSLM tiene 8 actividades.', 'The PSLM has 8 activities.'],
 [2, 2, 'Que actividad del PSLM identifica oportunidades y necesidades del mercado?', 'Which PSLM activity identifies market opportunities and needs?', ['Disenar', 'Descubrir', 'Construir', 'Operar'], ['Design', 'Discover', 'Build', 'Operate'], 1, 'Descubrir identifica oportunidades, necesidades y demanda.', 'Discover identifies opportunities, needs, and demand.'],
 [2, 3, 'Que actividad del PSLM define la solucion y su arquitectura?', 'Which PSLM activity defines the solution and its architecture?', ['Descubrir', 'Disenar', 'Adquirir', 'Transicion'], ['Discover', 'Design', 'Acquire', 'Transition'], 1, 'Disenar define la solucion, arquitectura y requisitos.', 'Design defines the solution, architecture, and requirements.'],
