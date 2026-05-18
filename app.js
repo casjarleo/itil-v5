@@ -672,25 +672,52 @@ function renderProgress(){
  $("progressContent").innerHTML=h;
 }
 function resetStats(){if(!confirm(UI.resetConfirm[L]))return;safeLSRemove("itilv5_qstats");renderProgress();renderSummary();toast("✓");}
+function modeIcon(m){
+ if(m.indexOf("PeopleCert")!==-1||m.indexOf("Real")!==-1) return "\uD83C\uDF93";
+ if(m.indexOf("Mock")!==-1||m.indexOf("Simulacro")!==-1||m.indexOf("Sim")!==-1) return "\uD83E\uDDEA";
+ if(m.indexOf("Smart")!==-1||m.indexOf("Inteligente")!==-1) return "\uD83E\uDDE0";
+ if(m.indexOf("Adaptive")!==-1||m.indexOf("Adaptativo")!==-1) return "\uD83C\uDFAF";
+ if(m.indexOf("Full")!==-1||m.indexOf("Completo")!==-1) return "\uD83D\uDCCB";
+ return "\uD83D\uDCDA";
+}
 function renderHistory(){
  const h=JSON.parse(safeLSGet("itilv5_history","[]"));
  if(h.length===0){$("historyContent").innerHTML='<p style="text-align:center;color:var(--muted);margin:30px 0">'+UI.noHist[L]+'</p>';return;}
- let html='<table><thead><tr><th>#</th><th>'+UI.date[L]+'</th><th>'+UI.mode[L]+'</th><th>'+UI.questions[L]+'</th><th>'+UI.correct[L]+'</th><th>'+UI.score[L]+'</th><th>'+UI.status[L]+'</th></tr></thead><tbody>';
+ let html="";
  for(let i=h.length-1;i>=0;i--){
- const r=h[i],sc=r.pct>=65?"var(--green)":"var(--red)";
- html+='<tr><td>'+(i+1)+'</td><td>'+r.date+'</td><td>'+r.mode+'</td><td>'+r.total+'</td><td>'+r.correct+'</td>';
- html+='<td style="color:'+sc+';font-weight:700">'+r.pct+'%</td><td>'+(r.pass?"✅":"❌")+'</td></tr>';
+  const r=h[i],pass=r.pct>=65,sc=pass?"var(--green)":"var(--red)";
+  html+='<div class="hist-card">';
+  html+='<div class="hist-head"><span class="hist-mode">'+modeIcon(r.mode)+' '+r.mode+'</span><span class="hist-num">#'+(i+1)+'</span></div>';
+  html+='<div class="hist-date">\uD83D\uDCC5 '+r.date+'</div>';
+  html+='<div class="hist-body">';
+  html+='<div class="hist-score" style="color:'+sc+'">'+r.pct+'%</div>';
+  html+='<div class="hist-detail">';
+  html+='<span class="hist-badge" style="background:'+sc+'">'+(pass?"PASS":"FAIL")+'</span>';
+  html+='<div class="hist-meta">'+r.correct+'/'+r.total+' '+UI.correct[L]+'</div>';
+  if(r.avgTime) html+='<div class="hist-meta">\u23F1 '+r.avgTime+' '+UI.secQ[L]+'</div>';
+  if(r.bestStreak&&r.bestStreak>=3) html+='<div class="hist-meta">\uD83D\uDD25 '+r.bestStreak+'</div>';
+  html+='</div></div>';
+  if(r.dc&&r.dt){
+   html+='<div class="hist-domains">';
+   for(let d=0;d<7;d++){
+    if(!r.dt[d]||r.dt[d]===0) continue;
+    const dp=Math.round((r.dc[d]/r.dt[d])*100);
+    let col="var(--red)";if(dp>=80) col="var(--green)";else if(dp>=65) col="var(--orange)";
+    html+='<div class="hist-dom-row"><span class="hist-dom-icon">'+DICONS[d]+'</span><div class="hist-dom-bar"><div class="hist-dom-fill" style="width:'+dp+'%;background:'+col+'"></div></div><span class="hist-dom-pct" style="color:'+col+'">'+dp+'%</span></div>';
+   }
+   html+='</div>';
+  }
+  html+='</div>';
  }
- html+='</tbody></table>';
  if(h.length>1){
- html+='<h3 style="margin-top:20px">'+UI.trend[L]+'</h3>';
- html+='<div style="display:flex;align-items:flex-end;gap:4px;height:120px;padding:10px 0">';
- for(let i=0;i<h.length;i++){
- let bH=Math.max(h[i].pct,5),col=h[i].pct>=65?"var(--green)":"var(--red)";
- html+='<div style="flex:1;max-width:40px;height:'+bH+'%;background:'+col+';border-radius:4px 4px 0 0;position:relative" title="'+h[i].pct+'%">';
- html+='<span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.7em;color:var(--muted)">'+h[i].pct+'</span></div>';
- }
- html+='</div>';
+  html+='<div class="results-box" style="margin-top:20px"><h3 style="margin:0 0 12px">'+UI.trend[L]+'</h3>';
+  html+='<div style="display:flex;align-items:flex-end;gap:4px;height:120px;padding:10px 0">';
+  for(let i=0;i<h.length;i++){
+   let bH=Math.max(h[i].pct,5),col=h[i].pct>=65?"var(--green)":"var(--red)";
+   html+='<div style="flex:1;max-width:40px;height:'+bH+'%;background:'+col+';border-radius:4px 4px 0 0;position:relative" title="'+h[i].pct+'%">';
+   html+='<span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.7em;color:var(--muted)">'+h[i].pct+'</span></div>';
+  }
+  html+='</div></div>';
  }
  html+=buildDomainPerf();
  $("historyContent").innerHTML=html;
