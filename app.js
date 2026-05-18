@@ -617,15 +617,18 @@ function buildDomainPerf(){
  for(let d=0;d<7;d++){if(tt[d]>0) hasData=true;}
  if(!hasData) return "";
  let h='<div class="results-box"><h2>'+UI.domPerf[L]+'</h2>';
+ h+='<div class="hist-domains" style="border-top:none;padding-top:0">';
  for(let d=0;d<7;d++){
  if(tt[d]===0) continue;
  let dp=Math.round((tc[d]/tt[d])*100),col="var(--red)";
  if(dp>=80) col="var(--green)";else if(dp>=65) col="var(--orange)";
- h+='<div class="domain-bar"><div class="name">'+DICONS[d]+' '+DN[d][L].split(" ").slice(0,2).join(" ")+'</div>';
- h+='<div class="bar-bg"><div class="bar-fill" style="width:'+dp+'%;background:'+col+'"></div></div>';
- h+='<div class="pct" style="color:'+col+'">'+dp+'% ('+tc[d]+'/'+tt[d]+')</div></div>';
+ h+='<div class="hist-dom-row">';
+ h+='<div class="hist-dom-title">'+DICONS[d]+' '+DN[d][L]+'</div>';
+ h+='<div class="hist-dom-bar"><div class="hist-dom-fill" style="width:'+dp+'%;background:'+col+'"></div></div>';
+ h+='<div class="hist-dom-pct" style="color:'+col+'">'+dp+'% ('+tc[d]+'/'+tt[d]+')</div>';
+ h+='</div>';
  }
- h+='</div>';return h;
+ h+='</div></div>';return h;
 }
 function showReview(){
  let h='<h2 style="margin-top:20px">'+UI.reviewTitle[L]+'</h2>';
@@ -703,7 +706,11 @@ function renderHistory(){
     if(!r.dt[d]||r.dt[d]===0) continue;
     const dp=Math.round((r.dc[d]/r.dt[d])*100);
     let col="var(--red)";if(dp>=80) col="var(--green)";else if(dp>=65) col="var(--orange)";
-    html+='<div class="hist-dom-row"><span class="hist-dom-icon">'+DICONS[d]+'</span><div class="hist-dom-bar"><div class="hist-dom-fill" style="width:'+dp+'%;background:'+col+'"></div></div><span class="hist-dom-pct" style="color:'+col+'">'+dp+'%</span></div>';
+    html+='<div class="hist-dom-row">';
+    html+='<div class="hist-dom-title">'+DICONS[d]+' '+DN[d][L]+'</div>';
+    html+='<div class="hist-dom-bar"><div class="hist-dom-fill" style="width:'+dp+'%;background:'+col+'"></div></div>';
+    html+='<div class="hist-dom-pct" style="color:'+col+'">'+dp+'%</div>';
+    html+='</div>';
    }
    html+='</div>';
   }

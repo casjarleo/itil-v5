@@ -56,11 +56,6 @@ nav button:hover,nav button.active{background:var(--green);border-color:var(--gr
 .results-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:25px;margin:15px 0}
 .score-big{font-size:3em;font-weight:700;text-align:center}
 .score-big.pass{color:var(--green)}.score-big.fail{color:var(--red)}
-.domain-bar{display:flex;align-items:center;gap:10px;margin:8px 0}
-.domain-bar .name{width:140px;text-align:right;font-size:.85em;color:var(--muted)}
-.domain-bar .bar-bg{flex:1;height:20px;background:var(--bg3);border-radius:10px;overflow:hidden}
-.domain-bar .bar-fill{height:100%;border-radius:10px;transition:width .5s}
-.domain-bar .pct{width:50px;font-weight:600;font-size:.85em}
 table{width:100%;border-collapse:collapse;margin:15px 0}
 th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--bg3)}
 th{background:var(--bg2);color:var(--blue);font-weight:600}
@@ -111,9 +106,95 @@ th{background:var(--bg2);color:var(--blue);font-weight:600}
 @media(max-width:600px){h1{font-size:1.2em}.q-text{font-size:1em}nav button{padding:7px 10px;font-size:.8em}.dom-card{padding:14px 15px;gap:10px}.dom-card .di{font-size:1.4em}.dom-card .dq{font-size:1.2em;min-width:35px}.sum-row{flex-direction:column}.flash-card{min-height:180px;padding:20px}
 .settings-btn{width:32px;height:32px;font-size:1em}
 }
-/* ── History Cards ──────────────────────────────────────────── */
-.hist-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:transform .15s}
-.hist-card:hover{transform:translateY(-2px)}
+
+
+/* ─────────────────────────────────────────────
+   HISTORY DOMAINS — LAYOUT VERTICAL PRO (with visible bars)
+───────────────────────────────────────────── */
+
+.hist-domains{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+ padding-top:10px;
+ border-top:1px solid var(--border);
+}
+
+.hist-dom-row{
+ display:flex;
+ flex-direction:column;
+ gap:4px;
+ margin-bottom:6px;
+}
+
+.hist-dom-title{
+ font-weight:600;
+ font-size:.85em;
+ color:var(--text);
+}
+
+.hist-dom-bar{
+ width:100%;
+ height:10px;
+ background:#2a2f3a;
+ border-radius:6px;
+ overflow:hidden;
+ margin-top:2px;
+}
+
+.hist-dom-fill{
+ height:100%;
+ min-width:2px;
+ border-radius:6px;
+ transition:width .3s;
+}
+
+.hist-dom-pct{
+ font-size:.8em;
+ font-weight:700;
+ text-align:right;
+}
+
+
+/* ─────────────────────────────────────────────
+   DOMAIN PERFORMANCE BARS — robust layout (fix invisible bars)
+───────────────────────────────────────────── */
+.domain-bar{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ margin:6px 0;
+}
+.domain-bar .name{
+ min-width:120px;
+ font-size:.85em;
+ font-weight:600;
+}
+.domain-bar .bar-bg{
+ flex:1;
+ height:10px;
+ background:var(--bg3);
+ border-radius:8px;
+ overflow:hidden;
+}
+.domain-bar .bar-fill{
+ height:100%;
+ border-radius:8px;
+ transition:width .3s;
+}
+.domain-bar .pct{
+ min-width:45px;
+ text-align:right;
+ font-weight:700;
+ font-size:.85em;
+}
+
+
+/* ─────────────────────────────────────────────
+   HISTORY CARDS — PRO UX
+───────────────────────────────────────────── */
+.hist-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:transform .15s, box-shadow .15s}
+.hist-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
 .hist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .hist-mode{font-weight:700;font-size:1em}
 .hist-num{color:var(--muted);font-size:.85em;font-weight:600}
@@ -123,9 +204,4 @@ th{background:var(--bg2);color:var(--blue);font-weight:600}
 .hist-detail{display:flex;flex-direction:column;gap:4px}
 .hist-badge{display:inline-block;color:#fff;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:20px;width:fit-content;letter-spacing:.5px}
 .hist-meta{color:var(--muted);font-size:.85em}
-.hist-domains{display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid var(--border)}
-.hist-dom-row{display:flex;align-items:center;gap:6px;font-size:.8em}
-.hist-dom-icon{width:20px;text-align:center}
-.hist-dom-bar{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
-.hist-dom-fill{height:100%;border-radius:4px;transition:width .3s}
-.hist-dom-pct{min-width:36px;text-align:right;font-weight:700;font-size:.85em}
+
