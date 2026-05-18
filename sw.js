@@ -1,3 +1,4 @@
+// IMPORTANT: Update version here AND APP_VERSION in config.js
 const CACHE_NAME = 'itilv5-v5.2';
 const ASSETS = [
  './',
@@ -42,7 +43,7 @@ self.addEventListener('fetch', function(e) {
  if (cached) {
  fetch(e.request).then(function(response) {
  if (response && response.status === 200) {
- const clone = response.clone();
+ var clone = response.clone();
  caches.open(CACHE_NAME).then(function(cache) {
  cache.put(e.request, clone);
  });
@@ -52,7 +53,7 @@ self.addEventListener('fetch', function(e) {
  }
  return fetch(e.request).then(function(response) {
  if (response && response.status === 200) {
- const clone = response.clone();
+ var clone = response.clone();
  caches.open(CACHE_NAME).then(function(cache) {
  cache.put(e.request, clone);
  });
